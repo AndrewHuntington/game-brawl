@@ -47,12 +47,15 @@ createAutoComplete({
 let leftGame;
 let rightGame;
 const onGameSelect = async (game, summaryElement, side) => {
-  const response = await axios.get("https://api.rawg.io/api/games", {
-    params: {
-      key: "392eacce914141528cd685d219a48823",
-      search: game.name,
-    },
-  });
+  console.log("game", game.id.toString());
+  const response = await axios.get(
+    "https://api.rawg.io/api/games/" + game.id.toString(),
+    {
+      params: {
+        key: "392eacce914141528cd685d219a48823",
+      },
+    }
+  );
 
   summaryElement.innerHTML = gameTemplate(response.data);
 
@@ -95,57 +98,62 @@ const runComparison = () => {
 };
 
 const gameTemplate = (gameDetail) => {
-  const dollars = parseInt(
-    movieDetail.BoxOffice.replace(/\$/g, "").replace(/,/g, "")
-  );
-  const metascore = parseInt(movieDetail.Metascore);
-  const imdbRating = parseFloat(movieDetail.imdbRating);
-  const imdbVotes = parseInt(movieDetail.imdbVotes.replace(/,/g, ""));
+  // Game Values
+  const metascore = gameDetail.metacritic;
+  const playtime = gameDetail.playtime;
+  const avgRating = gameDetail.rating;
+  const exceptionals = gameDetail.ratings[1].count;
+  const twitchCount = gameDetail.twitch_count;
+  const youtubeCount = gameDetail.youtube_count;
+  let website = "";
 
-  const awards = movieDetail.Awards.split(" ").reduce((prev, word) => {
-    const value = parseInt(word);
-
-    if (isNaN(value)) {
-      return prev;
-    } else {
-      return prev + value;
-    }
-  }, 0);
+  if (gameDetail.slug === "") {
+    website = "https://www.google.com/search?q=" + gameDetail.name;
+  } else {
+    website = "https://rawg.io/games/" + gameDetail.slug;
+  }
 
   return `
     <article class="media">
       <figure class="media-left">
         <p class="image">
-          <img src="${movieDetail.Poster}" />
+          <img src="${gameDetail.background_image}" />
         </p>
       </figure>
       <div class="media-content">
         <div class="content">
-          <h1>${movieDetail.Title}</h1>
-          <h4>${movieDetail.Genre}</h4>
-          <p>${movieDetail.Plot}</p>
+          <h1>${gameDetail.name}</h1>
+          <!-- <h4>${gameDetail.genres}</h4> -->
+          <p>${gameDetail.description.slice(
+            0,
+            125
+          )}... <br>[<a href="${website}" target="_blank">Learn More]</a></p>
         </div>
       </div>
     </article>
-    <article data-value=${awards} class="notification is-primary">
-      <p class="title">${movieDetail.Awards}</p>
-      <p class="subtitle">Awards</p>
+    <article data-value=${avgRating} class="notification is-primary">
+      <p class="title">${avgRating}</p>
+      <p class="subtitle">Average Rating on RAWG</p>
     </article>
-    <article data-value=${dollars} class="notification is-primary">
-      <p class="title">${movieDetail.BoxOffice}</p>
-      <p class="subtitle">Box Office</p>
+    <article data-value=${exceptionals} class="notification is-primary">
+      <p class="title">${exceptionals}</p>
+      <p class="subtitle">Number of Times Voted Exceptional on RAWG</p>
     </article>
     <article data-value=${metascore} class="notification is-primary">
-      <p class="title">${movieDetail.Metascore}</p>
-      <p class="subtitle">Metascore</p>
+      <p class="title">${metascore}</p>
+      <p class="subtitle">Metacritic Score (if available)</p>
     </article>
-    <article data-value=${imdbRating} class="notification is-primary">
-      <p class="title">${movieDetail.imdbRating}</p>
-      <p class="subtitle">IMDB Rating</p>
+    <article data-value=${playtime} class="notification is-primary">
+      <p class="title">${playtime}</p>
+      <p class="subtitle">Playtime (in hours)</p>
     </article>
-    <article data-value=${imdbVotes} class="notification is-primary">
-      <p class="title">${movieDetail.imdbVotes}</p>
-      <p class="subtitle">IMDB Votes</p>
+    <article data-value=${twitchCount} class="notification is-primary">
+      <p class="title">${twitchCount}</p>
+      <p class="subtitle">Twitch Streams</p>
+    </article>
+    <article data-value=${youtubeCount} class="notification is-primary">
+      <p class="title">${youtubeCount.toLocaleString("en-US")}</p>
+      <p class="subtitle">YouTube Videos</p>
     </article>
   `;
 };
