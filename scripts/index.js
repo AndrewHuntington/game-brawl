@@ -1,27 +1,29 @@
 const autoCompleteConfig = {
-  renderOption(movie) {
-    const imgSrc = movie.Poster === "N/A" ? "" : movie.Poster;
+  renderOption(game) {
+    const imgSrc = game.background_image;
     return `
       <img src="${imgSrc}" />
-      ${movie.Title} (${movie.Year})
+      ${game.name} (${game.released})
     `;
   },
   inputValue(movie) {
     return movie.Title;
   },
   async fetchData(searchTerm) {
-    const response = await axios.get("http://www.omdbapi.com/", {
+    const response = await axios.get("https://api.rawg.io/api/games", {
       params: {
-        apikey: "f50b872c",
-        s: searchTerm,
+        key: "392eacce914141528cd685d219a48823",
+        search: searchTerm,
       },
     });
 
-    if (response.data.Error) {
+    // How to handle searches that don't return anything or "blank" searches
+    // TODO: Improve handling by providing the user a message
+    if (response.data.count === 0 || searchTerm === "") {
       return [];
     }
 
-    return response.data.Search;
+    return response.data.results;
   },
 };
 
