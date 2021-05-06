@@ -3,7 +3,7 @@ const autoCompleteConfig = {
     const imgSrc = game.background_image;
     return `
       <img src="${imgSrc}" />
-      ${game.name} (${game.released})
+      ${game.name} (${game.released.slice(0, 4)})
     `;
   },
   inputValue(movie) {

@@ -67,6 +67,8 @@ figure .image img {
 
 .dropdown-item img {
   height: 50px;
+  min-width: 75px;
+  max-width: 75px;
   margin-right: 10px;
 }
 
