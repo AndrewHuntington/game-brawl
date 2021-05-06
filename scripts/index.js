@@ -113,6 +113,7 @@ const gameTemplate = (gameDetail) => {
     website = "https://rawg.io/games/" + gameDetail.slug;
   }
 
+  // TODO: Add genres
   return `
     <article class="media">
       <figure class="media-left">
