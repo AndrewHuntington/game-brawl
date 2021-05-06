@@ -6,8 +6,8 @@ const autoCompleteConfig = {
       ${game.name} (${game.released.slice(0, 4)})
     `;
   },
-  inputValue(movie) {
-    return movie.Title;
+  inputValue(game) {
+    return game.name;
   },
   async fetchData(searchTerm) {
     const response = await axios.get("https://api.rawg.io/api/games", {
@@ -30,39 +30,39 @@ const autoCompleteConfig = {
 createAutoComplete({
   ...autoCompleteConfig,
   root: document.querySelector("#left-autocomplete"),
-  onOptionSelect(movie) {
+  onOptionSelect(game) {
     document.querySelector(".tutorial").classList.add("is-hidden");
-    onMovieSelect(movie, document.querySelector("#left-summary"), "left");
+    onGameSelect(game, document.querySelector("#left-summary"), "left");
   },
 });
 createAutoComplete({
   ...autoCompleteConfig,
   root: document.querySelector("#right-autocomplete"),
-  onOptionSelect(movie) {
+  onOptionSelect(game) {
     document.querySelector(".tutorial").classList.add("is-hidden");
-    onMovieSelect(movie, document.querySelector("#right-summary"), "right");
+    onGameSelect(game, document.querySelector("#right-summary"), "right");
   },
 });
 
-let leftMovie;
-let rightMovie;
-const onMovieSelect = async (movie, summaryElement, side) => {
-  const response = await axios.get("http://www.omdbapi.com/", {
+let leftGame;
+let rightGame;
+const onGameSelect = async (game, summaryElement, side) => {
+  const response = await axios.get("https://api.rawg.io/api/games", {
     params: {
-      apikey: "f50b872c",
-      i: movie.imdbID,
+      key: "392eacce914141528cd685d219a48823",
+      search: game.name,
     },
   });
 
-  summaryElement.innerHTML = movieTemplate(response.data);
+  summaryElement.innerHTML = gameTemplate(response.data);
 
   if (side === "left") {
-    leftMovie = response.data;
+    leftGame = response.data;
   } else {
-    rightMovie = response.data;
+    rightGame = response.data;
   }
 
-  if (leftMovie && rightMovie) {
+  if (leftGame && rightGame) {
     runComparison();
   }
 };
@@ -94,7 +94,7 @@ const runComparison = () => {
   });
 };
 
-const movieTemplate = (movieDetail) => {
+const gameTemplate = (gameDetail) => {
   const dollars = parseInt(
     movieDetail.BoxOffice.replace(/\$/g, "").replace(/,/g, "")
   );
