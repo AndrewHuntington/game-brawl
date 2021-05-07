@@ -6,8 +6,6 @@
 
 ### [Launch Game Brawl](https://andrewhuntington.github.io/game-brawl/)
 
-###########################################
-
 ## About
 
 **Game Brawl** is an app that I created to practice requesting information from a database via an API via JavaScript. Users type in the names of two games that they wish to compare, and then relevent data is fetched from a game information database via their API and displayed to the user. The game with the most green squares is the winner.
