@@ -2,7 +2,7 @@
 
 ## Welcome to the Game Brawl repository!
 
-### Game Brawl is an application that compares two games of your choosing and desides a winner!
+### Game Brawl is an application that compares two games of your choosing and decides a winner!
 
 ### [Launch Game Brawl](https://andrewhuntington.github.io/game-brawl/)
 
